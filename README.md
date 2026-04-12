@@ -12,6 +12,7 @@ Opinionated Claude Code skills for building Go HTTP services.
 | **golang-database** | Database access with pgx, parameterized queries, transactions, connection pools, goose migrations | Adapted from [samber/cc-skills-golang](https://github.com/samber/cc-skills-golang/tree/main/skills/golang-database) (MIT) |
 | **golang-troubleshooting** | Systematic debugging — root cause analysis, pprof, race detection, Delve, production debugging | Adapted from [samber/cc-skills-golang](https://github.com/samber/cc-skills-golang/tree/main/skills/golang-troubleshooting) (MIT) |
 | **golang-structs-interfaces** | Struct and interface design — composition, embedding, type assertions, interface segregation, field tags | Adapted from [samber/cc-skills-golang](https://github.com/samber/cc-skills-golang/tree/main/skills/golang-structs-interfaces) (MIT) |
+| **golang-validation** | Request validation with go-playground/validator — tag reference, custom validators, cross-field, dive, error humanization | Original |
 
 ## Install
 
