@@ -247,23 +247,23 @@ For minor/major bumps, create the tag manually — auto-increment continues from
 For frontend/dashboard deployed to Cloudflare:
 
 ```yaml
-  deploy:
-    runs-on: self-hosted
-    environment: production
-    env:
-      HOME: ${{ github.workspace }}
-      CI: "true"
-    steps:
-      - uses: actions/checkout@v6
+deploy:
+  runs-on: self-hosted
+  environment: production
+  env:
+    HOME: ${{ github.workspace }}
+    CI: "true"
+  steps:
+    - uses: actions/checkout@v6
 
-      - name: Build
-        run: devbox run -- task deps build
+    - name: Build
+      run: devbox run -- task deps build
 
-      - name: Deploy to Cloudflare Workers
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: devbox run -- task deploy
+    - name: Deploy to Cloudflare Workers
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      run: devbox run -- task deploy
 ```
 
 Set `HOME: ${{ github.workspace }}` when Cloudflare wrangler needs a writable home directory.
@@ -273,27 +273,27 @@ Set `HOME: ${{ github.workspace }}` when Cloudflare wrangler needs a writable ho
 When Docker build needs access to private repos:
 
 ```yaml
-    steps:
-      - name: Setup SSH agent
-        run: |
-          eval $(ssh-agent -s)
-          ssh-add /var/lib/github-runner/ssh-key
-          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
-          echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> $GITHUB_ENV
+steps:
+  - name: Setup SSH agent
+    run: |
+      eval $(ssh-agent -s)
+      ssh-add /var/lib/github-runner/ssh-key
+      echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> $GITHUB_ENV
+      echo "SSH_AGENT_PID=$SSH_AGENT_PID" >> $GITHUB_ENV
 
-      - uses: actions/checkout@v6
+  - uses: actions/checkout@v6
 
-      - name: Build with SSH
-        run: devbox run -- task docker:build DOCKER_SSH="--ssh default" IMAGE_TAG=${{ github.sha }}
+  - name: Build with SSH
+    run: devbox run -- task docker:build DOCKER_SSH="--ssh default" IMAGE_TAG=${{ github.sha }}
 ```
 
 ## Runner Selection
 
-| Use case | Runner | Why |
-| --- | --- | --- |
-| Docker build/push | `self-hosted` | Needs Docker daemon, registry access, SSH keys |
-| Lint, test, release | `ubuntu-latest` | Stateless, no special access needed |
-| Cloudflare deploy | `self-hosted` | May need secrets, network access |
+| Use case            | Runner          | Why                                            |
+| ------------------- | --------------- | ---------------------------------------------- |
+| Docker build/push   | `self-hosted`   | Needs Docker daemon, registry access, SSH keys |
+| Lint, test, release | `ubuntu-latest` | Stateless, no special access needed            |
+| Cloudflare deploy   | `self-hosted`   | May need secrets, network access               |
 
 ## Devbox in CI
 
@@ -340,7 +340,7 @@ Only request what you need:
 
 ```yaml
 permissions:
-  contents: write  # for creating releases/tags
+  contents: write # for creating releases/tags
 ```
 
 ### Path triggers
@@ -360,13 +360,13 @@ Always include tooling and workflow files in path triggers.
 
 ## Anti-Patterns
 
-| Bad | Good |
-| --- | --- |
-| Installing tools with `apt-get` or `npm install -g` | Use Devbox — reproducible, cached |
-| Running raw `go build`, `golangci-lint` in workflow | Use `devbox run -- task build` |
-| Missing concurrency control | Always add `cancel-in-progress: true` |
-| Using `ubuntu-latest` for Docker builds | Use `self-hosted` with Docker pre-installed |
-| Hardcoding image tags | Use `${{ github.sha }}` |
-| Building all services on every push | Use path filters or `dorny/paths-filter` |
-| Missing `workflow_dispatch` on deploy workflows | Always allow manual triggers |
-| `fetch-depth: 1` when needing git history | Use `fetch-depth: 0` for tags/release notes |
+| Bad                                                 | Good                                        |
+| --------------------------------------------------- | ------------------------------------------- |
+| Installing tools with `apt-get` or `npm install -g` | Use Devbox — reproducible, cached           |
+| Running raw `go build`, `golangci-lint` in workflow | Use `devbox run -- task build`              |
+| Missing concurrency control                         | Always add `cancel-in-progress: true`       |
+| Using `ubuntu-latest` for Docker builds             | Use `self-hosted` with Docker pre-installed |
+| Hardcoding image tags                               | Use `${{ github.sha }}`                     |
+| Building all services on every push                 | Use path filters or `dorny/paths-filter`    |
+| Missing `workflow_dispatch` on deploy workflows     | Always allow manual triggers                |
+| `fetch-depth: 1` when needing git history           | Use `fetch-depth: 0` for tags/release notes |
