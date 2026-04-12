@@ -73,17 +73,18 @@ tasks:
     desc: Show skill statistics (file count, token estimate)
     cmds:
       - |
-        printf "%-30s %8s %8s %8s\n" "Skill" "Files" "Lines" "~Tokens"
-        printf "%-30s %8s %8s %8s\n" "-----" "-----" "-----" "-------"
+        echo "| Skill | Files | Lines | ~Tokens |"
+        echo "| --- | ---: | ---: | ---: |"
         total_lines=0
         for dir in golang-*/; do
+          name=$(basename "$dir")
           files=$(find "$dir" -name "*.md" | wc -l)
           lines=$(find "$dir" -name "*.md" -exec cat {} + | wc -l)
           tokens=$((lines * 3))
           total_lines=$((total_lines + lines))
-          printf "%-30s %8d %8d %8d\n" "$dir" "$files" "$lines" "$tokens"
+          echo "| $name | $files | $lines | $tokens |"
         done
-        printf "%-30s %8s %8d %8d\n" "TOTAL" "" "$total_lines" "$((total_lines * 3))"
+        echo "| **TOTAL** | | **$total_lines** | **$((total_lines * 3))** |"
 
   default:
     cmds:
