@@ -53,44 +53,44 @@ jobs:
           echo "prev=$LATEST" >> "$GITHUB_OUTPUT"
 
       - name: Generate release notes
-        id: notes
         run: |
           PREV_TAG=${{ steps.version.outputs.prev }}
+          NOTES_FILE=$(mktemp)
 
-          DELIMITER="RELEASE_NOTES_$(date +%s)"
-          echo "notes<<${DELIMITER}" >> "$GITHUB_OUTPUT"
+          # Stats table — only capture the markdown table lines, skip devbox noise
+          devbox run -- task stats 2>/dev/null | grep -E '^\|' > "$NOTES_FILE"
 
-          devbox run -- task stats 2>/dev/null >> "$GITHUB_OUTPUT"
-
-          echo "" >> "$GITHUB_OUTPUT"
-          echo "## Changes" >> "$GITHUB_OUTPUT"
-          echo "" >> "$GITHUB_OUTPUT"
+          echo "" >> "$NOTES_FILE"
+          echo "## Changes" >> "$NOTES_FILE"
+          echo "" >> "$NOTES_FILE"
 
           if [ -n "$PREV_TAG" ]; then
-            git log --pretty=format:"- %s" "${PREV_TAG}..HEAD" -- '*.md' 'golang-*/' 'Taskfile.yml' 'devbox.json' >> "$GITHUB_OUTPUT"
+            git log --pretty=format:"- %s" "${PREV_TAG}..HEAD" -- '*.md' 'golang-*/' 'Taskfile.yml' 'devbox.json' >> "$NOTES_FILE"
           else
-            git log --pretty=format:"- %s" HEAD >> "$GITHUB_OUTPUT"
+            git log --pretty=format:"- %s" HEAD >> "$NOTES_FILE"
           fi
 
-          echo "" >> "$GITHUB_OUTPUT"
-          echo "" >> "$GITHUB_OUTPUT"
-          echo "## Skills" >> "$GITHUB_OUTPUT"
-          echo "" >> "$GITHUB_OUTPUT"
+          echo "" >> "$NOTES_FILE"
+          echo "" >> "$NOTES_FILE"
+          echo "## Skills" >> "$NOTES_FILE"
+          echo "" >> "$NOTES_FILE"
 
           for dir in golang-*/; do
             name=$(grep "^name:" "$dir/SKILL.md" | head -1 | sed 's/name: *//' | tr -d '"')
             desc=$(grep "^description:" "$dir/SKILL.md" | head -1 | sed 's/description: *//' | tr -d '"' | cut -c1-100)
-            echo "- **${name}** — ${desc}" >> "$GITHUB_OUTPUT"
+            echo "- **${name}** — ${desc}" >> "$NOTES_FILE"
           done
 
-          echo "" >> "$GITHUB_OUTPUT"
-          echo "## Install" >> "$GITHUB_OUTPUT"
-          echo "" >> "$GITHUB_OUTPUT"
-          echo '```bash' >> "$GITHUB_OUTPUT"
-          echo "npx skills add openserbia/go-claude-skills -g -y" >> "$GITHUB_OUTPUT"
-          echo '```' >> "$GITHUB_OUTPUT"
+          {
+            echo ""
+            echo "## Install"
+            echo ""
+            echo '```bash'
+            echo 'npx skills add openserbia/go-claude-skills -g -y'
+            echo '```'
+          } >> "$NOTES_FILE"
 
-          echo "${DELIMITER}" >> "$GITHUB_OUTPUT"
+          echo "notes_file=$NOTES_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Create tag
         run: |
@@ -103,4 +103,4 @@ jobs:
         run: |
           gh release create "${{ steps.version.outputs.tag }}" \
             --title "${{ steps.version.outputs.tag }}" \
-            --notes "${{ steps.notes.outputs.notes }}"
+            --notes-file "${{ steps.notes.outputs.notes_file }}"
