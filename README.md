@@ -44,6 +44,7 @@ git clone https://github.com/openserbia/go-claude-skills.git ~/.agents/skills/go
 | `golang-tooling` | Build pipeline — golangci-lint v2, gofumpt + gci, Taskfile, multi-stage Docker with Devbox, goose migrations, testing conventions |
 | `golang-scaffold` | Scaffold a new Go HTTP service with 22 infrastructure files from a single command |
 | `golang-validation` | Request validation with go-playground/validator — complete tag reference, custom validators, cross-field validation, dive for collections, error humanization, httpin integration |
+| `golang-github-actions` | GitHub Actions workflows — Devbox + Taskfile CI, Docker deploy, multi-service builds, auto-release, path filtering, self-hosted runners |
 
 ### Adapted from [samber/cc-skills-golang](https://github.com/samber/cc-skills-golang) (MIT)
 

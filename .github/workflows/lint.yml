@@ -6,14 +6,15 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Devbox
-        uses: jetify-com/devbox-install-action@v0.12.0
+      - uses: actions/checkout@v6
 
       - name: Lint markdown
         run: devbox run -- task lint:md
