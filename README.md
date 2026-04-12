@@ -4,10 +4,13 @@ Opinionated Claude Code skills for building Go HTTP services.
 
 ## Skills
 
-| Skill | Description |
-|-------|-------------|
-| **golang-service** | Architecture and patterns — chi router, httpin binding, pgx, repository pattern, error handling, middleware, pagination |
-| **golang-tooling** | Build pipeline, code quality — golangci-lint, gofumpt, Taskfile, Docker, goose migrations, testing conventions |
+| Skill | Description | Origin |
+|-------|-------------|--------|
+| **golang-service** | Architecture and patterns — chi router, httpin binding, pgx, repository pattern, error handling, middleware, pagination | Original |
+| **golang-tooling** | Build pipeline, code quality — golangci-lint, gofumpt, Taskfile, Docker, goose migrations, testing conventions | Original |
+| **golang-scaffold** | Scaffold a new Go HTTP service with all infrastructure files from a single command | Original |
+| **golang-database** | Database access with pgx, parameterized queries, transactions, connection pools, goose migrations | Adapted from [samber/cc-skills-golang](https://github.com/samber/cc-skills-golang/tree/main/skills/golang-database) (MIT) |
+| **golang-troubleshooting** | Systematic debugging — root cause analysis, pprof, race detection, Delve, production debugging | Adapted from [samber/cc-skills-golang](https://github.com/samber/cc-skills-golang/tree/main/skills/golang-troubleshooting) (MIT) |
 
 ## Install
 
