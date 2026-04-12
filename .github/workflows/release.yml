@@ -60,7 +60,7 @@ jobs:
           DELIMITER="RELEASE_NOTES_$(date +%s)"
           echo "notes<<${DELIMITER}" >> "$GITHUB_OUTPUT"
 
-          devbox run -- task stats >> "$GITHUB_OUTPUT"
+          devbox run -- task stats 2>/dev/null >> "$GITHUB_OUTPUT"
 
           echo "" >> "$GITHUB_OUTPUT"
           echo "## Changes" >> "$GITHUB_OUTPUT"
