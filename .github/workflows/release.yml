@@ -55,30 +55,31 @@ jobs:
       - name: Generate release notes
         run: |
           PREV_TAG=${{ steps.version.outputs.prev }}
-          NOTES_FILE=$(mktemp)
 
           # Stats table — only capture the markdown table lines, skip devbox noise
-          devbox run -- task stats 2>/dev/null | grep -E '^\|' > "$NOTES_FILE"
+          devbox run -- task stats 2>/dev/null | grep -E '^\|' > /tmp/release-notes.md
 
-          echo "" >> "$NOTES_FILE"
-          echo "## Changes" >> "$NOTES_FILE"
-          echo "" >> "$NOTES_FILE"
+          echo "" >> /tmp/release-notes.md
+          echo "## Changes" >> /tmp/release-notes.md
+          echo "" >> /tmp/release-notes.md
 
           if [ -n "$PREV_TAG" ]; then
-            git log --pretty=format:"- %s" "${PREV_TAG}..HEAD" -- '*.md' 'golang-*/' 'Taskfile.yml' 'devbox.json' >> "$NOTES_FILE"
+            git log --pretty=format:"- %s" "${PREV_TAG}..HEAD" -- '*.md' 'golang-*/' 'Taskfile.yml' 'devbox.json' >> /tmp/release-notes.md
           else
-            git log --pretty=format:"- %s" HEAD >> "$NOTES_FILE"
+            git log --pretty=format:"- %s" HEAD >> /tmp/release-notes.md
           fi
 
-          echo "" >> "$NOTES_FILE"
-          echo "" >> "$NOTES_FILE"
-          echo "## Skills" >> "$NOTES_FILE"
-          echo "" >> "$NOTES_FILE"
+          {
+            echo ""
+            echo ""
+            echo "## Skills"
+            echo ""
+          } >> /tmp/release-notes.md
 
           for dir in golang-*/; do
             name=$(grep "^name:" "$dir/SKILL.md" | head -1 | sed 's/name: *//' | tr -d '"')
             desc=$(grep "^description:" "$dir/SKILL.md" | head -1 | sed 's/description: *//' | tr -d '"' | cut -c1-100)
-            echo "- **${name}** — ${desc}" >> "$NOTES_FILE"
+            echo "- **${name}** — ${desc}" >> /tmp/release-notes.md
           done
 
           {
@@ -88,9 +89,9 @@ jobs:
             echo '```bash'
             echo 'npx skills add openserbia/go-claude-skills -g -y'
             echo '```'
-          } >> "$NOTES_FILE"
+          } >> /tmp/release-notes.md
 
-          echo "notes_file=$NOTES_FILE" >> "$GITHUB_OUTPUT"
+          cat /tmp/release-notes.md
 
       - name: Create tag
         run: |
@@ -103,4 +104,4 @@ jobs:
         run: |
           gh release create "${{ steps.version.outputs.tag }}" \
             --title "${{ steps.version.outputs.tag }}" \
-            --notes-file "${{ steps.notes.outputs.notes_file }}"
+            --notes-file /tmp/release-notes.md
