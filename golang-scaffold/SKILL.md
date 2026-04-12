@@ -14,6 +14,7 @@ When the user asks to create/scaffold/bootstrap a new Go service or API.
 ## Required inputs
 
 Ask the user for:
+
 1. **Module path** — e.g., `github.com/openserbia/my-service`
 2. **Service directory name** — e.g., `my-service` (where files will be created)
 3. **Organization prefix** — for gci import grouping (default: `github.com/openserbia`)
@@ -1101,9 +1102,9 @@ build/
 ### Taskfile.yml
 
 ```yaml
-version: '3'
+version: "3"
 
-dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
+dotenv: [".env", "{{.ENV}}/.env", "{{.HOME}}/.env"]
 
 vars:
   PACKAGE_NAME:
@@ -1115,7 +1116,7 @@ vars:
   BUILD_PATH: "{{ .PWD }}/build"
 
 env:
-  PACKAGE_NAME: '{{.PACKAGE_NAME}}'
+  PACKAGE_NAME: "{{.PACKAGE_NAME}}"
   GOOS: linux
   GOARCH: amd64
   CGO_ENABLED: 0
@@ -1183,12 +1184,12 @@ tasks:
 ### Taskfile.migration.yml
 
 ```yaml
-version: '3'
+version: "3"
 
 env:
   GOOSE_DRIVER: postgres
-  GOOSE_DBSTRING: '{{.DATABASE_URL}}'
-  GOOSE_MIGRATION_DIR: '{{.USER_WORKING_DIR}}/migrations'
+  GOOSE_DBSTRING: "{{.DATABASE_URL}}"
+  GOOSE_MIGRATION_DIR: "{{.USER_WORKING_DIR}}/migrations"
   BUILD_PATH: "{{ .PWD }}/build"
 
 tasks:
@@ -1225,7 +1226,7 @@ tasks:
 ### Taskfile.docker.yml
 
 ```yaml
-version: '3'
+version: "3"
 
 vars:
   PACKAGE_NAME:
@@ -1238,8 +1239,8 @@ tasks:
   build:
     desc: Build the docker image
     vars:
-      TAG_LATEST: '{{.PACKAGE_NAME}}:latest'
-      TAG_SHA: '{{.PACKAGE_NAME}}:{{.IMAGE_TAG}}'
+      TAG_LATEST: "{{.PACKAGE_NAME}}:latest"
+      TAG_SHA: "{{.PACKAGE_NAME}}:{{.IMAGE_TAG}}"
     cmds:
       - docker rmi -f '{{.TAG_LATEST}}'
       - SOURCE_DATE_EPOCH= docker build --build-arg BUILD_TIME={{.NOW}} -t '{{.PACKAGE_NAME}}' ../ -f Dockerfile
@@ -1303,7 +1304,7 @@ set -e
 exec /svc/app
 ```
 
-### migrations/<timestamp>_init.sql
+### migrations/<timestamp>\_init.sql
 
 Use the current timestamp for the filename (YYYYMMDDHHMMSS format).
 

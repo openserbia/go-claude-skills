@@ -38,6 +38,7 @@ svc/
 ```
 
 ### Rules
+
 - All application code lives under `internal/` — nothing is exported
 - One handler file per resource (e.g., `telegram_user.go`, `residence.go`)
 - Domain entities in `internal/domain/` match the DB schema — they are NOT transport DTOs
@@ -116,6 +117,7 @@ func (r *ListItemsRequest) ToFilter(offset int) *domain.ItemFilter {
 ```
 
 ### httpin tags reference
+
 - `in:"body=json"` — JSON request body
 - `in:"query=param_name"` — Query string (`default=` supported)
 - `in:"path=param_name"` — URL path parameter (via chi)
@@ -198,6 +200,7 @@ const (
 ```
 
 Response shape:
+
 ```json
 {
   "error": {
@@ -315,6 +318,7 @@ func (r *ItemRepo) Upsert(ctx context.Context, item *domain.Item) error {
 ```
 
 ### Rules
+
 - Use `r.db.RO()` for all SELECT queries
 - Use `r.db.RW()` for INSERT/UPDATE/DELETE
 - Map `pgx.ErrNoRows` to `domain.ErrNotFound`
@@ -378,6 +382,7 @@ func NewServer(deps ServerDeps) http.Handler {
 ```
 
 ### Security headers middleware always includes:
+
 - `X-Content-Type-Options: nosniff`
 - `X-Frame-Options: DENY`
 - `Referrer-Policy: no-referrer`
@@ -497,15 +502,15 @@ _ = srv.Shutdown(ctxShutdown)
 
 ## Key Dependencies
 
-| Package | Purpose |
-|---------|---------|
-| `github.com/go-chi/chi/v5` | HTTP router |
-| `github.com/ggicci/httpin` | Request binding (query, path, body, header) |
-| `github.com/go-playground/validator/v10` | Struct validation |
-| `github.com/jackc/pgx/v5` | PostgreSQL driver + connection pool |
-| `github.com/go-chi/httplog/v3` | Structured HTTP logging |
-| `github.com/go-chi/httprate` | Rate limiting |
-| `github.com/prometheus/client_golang` | Prometheus metrics |
-| `github.com/joho/godotenv` | .env file loading |
-| `github.com/google/uuid` | UUID generation |
-| `log/slog` | Structured logging (stdlib) |
+| Package                                  | Purpose                                     |
+| ---------------------------------------- | ------------------------------------------- |
+| `github.com/go-chi/chi/v5`               | HTTP router                                 |
+| `github.com/ggicci/httpin`               | Request binding (query, path, body, header) |
+| `github.com/go-playground/validator/v10` | Struct validation                           |
+| `github.com/jackc/pgx/v5`                | PostgreSQL driver + connection pool         |
+| `github.com/go-chi/httplog/v3`           | Structured HTTP logging                     |
+| `github.com/go-chi/httprate`             | Rate limiting                               |
+| `github.com/prometheus/client_golang`    | Prometheus metrics                          |
+| `github.com/joho/godotenv`               | .env file loading                           |
+| `github.com/google/uuid`                 | UUID generation                             |
+| `log/slog`                               | Structured logging (stdlib)                 |

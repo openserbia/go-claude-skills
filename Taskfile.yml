@@ -1,0 +1,90 @@
+version: '3'
+
+tasks:
+  lint:
+    desc: Run all linters
+    cmds:
+      - task: lint:md
+      - task: lint:fmt
+
+  lint:md:
+    desc: Lint markdown files
+    cmds:
+      - markdownlint-cli2 "**/*.md"
+
+  lint:fmt:
+    desc: Check markdown formatting with prettier
+    cmds:
+      - prettier --check "**/*.md"
+
+  fmt:
+    desc: Format all markdown files
+    cmds:
+      - prettier --write "**/*.md"
+
+  validate:
+    desc: Validate skill structure (SKILL.md exists, has frontmatter)
+    cmds:
+      - |
+        ok=true
+        for dir in golang-*/; do
+          if [ ! -f "$dir/SKILL.md" ]; then
+            echo "FAIL: $dir missing SKILL.md"
+            ok=false
+            continue
+          fi
+          if ! head -1 "$dir/SKILL.md" | grep -q "^---$"; then
+            echo "FAIL: $dir/SKILL.md missing frontmatter"
+            ok=false
+            continue
+          fi
+          if ! grep -q "^name:" "$dir/SKILL.md"; then
+            echo "FAIL: $dir/SKILL.md missing name field"
+            ok=false
+            continue
+          fi
+          if ! grep -q "^description:" "$dir/SKILL.md"; then
+            echo "FAIL: $dir/SKILL.md missing description field"
+            ok=false
+            continue
+          fi
+          echo "OK: $dir"
+        done
+        $ok
+
+  check:links:
+    desc: Check for broken relative links in markdown files
+    cmds:
+      - |
+        ok=true
+        for md in $(find . -name "*.md" -not -path "./node_modules/*"); do
+          dir=$(dirname "$md")
+          grep -oP '\[.*?\]\(\./\K[^)]+' "$md" 2>/dev/null | while read -r link; do
+            target="$dir/$link"
+            if [ ! -f "$target" ]; then
+              echo "BROKEN: $md -> $link"
+              ok=false
+            fi
+          done
+        done
+        $ok
+
+  stats:
+    desc: Show skill statistics (file count, token estimate)
+    cmds:
+      - |
+        printf "%-30s %8s %8s %8s\n" "Skill" "Files" "Lines" "~Tokens"
+        printf "%-30s %8s %8s %8s\n" "-----" "-----" "-----" "-------"
+        total_lines=0
+        for dir in golang-*/; do
+          files=$(find "$dir" -name "*.md" | wc -l)
+          lines=$(find "$dir" -name "*.md" -exec cat {} + | wc -l)
+          tokens=$((lines * 3))
+          total_lines=$((total_lines + lines))
+          printf "%-30s %8d %8d %8d\n" "$dir" "$files" "$lines" "$tokens"
+        done
+        printf "%-30s %8s %8d %8d\n" "TOTAL" "" "$total_lines" "$((total_lines * 3))"
+
+  default:
+    cmds:
+      - task -l

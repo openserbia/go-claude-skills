@@ -53,27 +53,27 @@ gofumpt -l -w .
 linters:
   default: standard
   enable:
-    - bodyclose         # Unclosed HTTP response bodies
-    - copyloopvar       # Loop variable capture bugs
-    - dupl              # Duplicate code detection
-    - errname           # Error type naming (ErrFoo, FooError)
-    - exhaustive        # Missing enum switch cases
+    - bodyclose # Unclosed HTTP response bodies
+    - copyloopvar # Loop variable capture bugs
+    - dupl # Duplicate code detection
+    - errname # Error type naming (ErrFoo, FooError)
+    - exhaustive # Missing enum switch cases
     - gocheckcompilerdirectives # Invalid //go: directives
-    - goconst           # Repeated strings that should be constants
-    - gocritic          # Opinionated Go checks (diagnostic, style, performance)
-    - mnd               # Magic number detection
-    - misspell          # Typos in comments and strings
-    - nilerr            # Returning nil when err != nil
-    - noctx             # HTTP requests without context
-    - prealloc          # Slice preallocation hints
-    - predeclared       # Shadowing predeclared identifiers
-    - revive            # Comprehensive Go linter
-    - sqlclosecheck     # Unclosed SQL rows/statements
-    - unconvert         # Unnecessary type conversions
-    - unparam           # Unused function parameters
-    - usestdlibvars     # Use stdlib constants (http.StatusOK vs 200)
-    - wastedassign      # Wasted variable assignments
-    - whitespace        # Unnecessary blank lines
+    - goconst # Repeated strings that should be constants
+    - gocritic # Opinionated Go checks (diagnostic, style, performance)
+    - mnd # Magic number detection
+    - misspell # Typos in comments and strings
+    - nilerr # Returning nil when err != nil
+    - noctx # HTTP requests without context
+    - prealloc # Slice preallocation hints
+    - predeclared # Shadowing predeclared identifiers
+    - revive # Comprehensive Go linter
+    - sqlclosecheck # Unclosed SQL rows/statements
+    - unconvert # Unnecessary type conversions
+    - unparam # Unused function parameters
+    - usestdlibvars # Use stdlib constants (http.StatusOK vs 200)
+    - wastedassign # Wasted variable assignments
+    - whitespace # Unnecessary blank lines
   settings:
     dupl:
       threshold: 150
@@ -98,6 +98,7 @@ formatters:
 ```
 
 ### Rules
+
 - Lint always runs AFTER formatting (`task lint` depends on `task fmt`)
 - Fix lint issues, don't suppress them — only exclude metrics/generated code directories
 - `mnd` exceptions: `strconv` parsing functions are allowed magic numbers
@@ -116,8 +117,8 @@ Use `go-task` (Taskfile.yml) for all build operations.
 ### Core Taskfile.yml
 
 ```yaml
-version: '3'
-dotenv: ['.env', '{{.ENV}}/.env']
+version: "3"
+dotenv: [".env", "{{.ENV}}/.env"]
 
 vars:
   PACKAGE_NAME:
@@ -129,7 +130,7 @@ vars:
   BUILD_PATH: "{{ .PWD }}/build"
 
 env:
-  PACKAGE_NAME: '{{.PACKAGE_NAME}}'
+  PACKAGE_NAME: "{{.PACKAGE_NAME}}"
   GOOS: linux
   GOARCH: amd64
   CGO_ENABLED: 0
@@ -142,13 +143,7 @@ tasks:
   build:
     deps: [deps, cleanup]
     cmds:
-      - go build
-          -ldflags="-w -s
-            -X 'main.Version=1.0.0'
-            -X 'main.Commit={{.COMMIT_HASH}}'
-            -X 'main.BuildTime={{.BUILD_TIME}}'"
-          -trimpath -mod vendor
-          -o {{.BUILD_PATH}}/app ./cmd/server
+      - go build -ldflags="-w -s -X 'main.Version=1.0.0' -X 'main.Commit={{.COMMIT_HASH}}' -X 'main.BuildTime={{.BUILD_TIME}}'" -trimpath -mod vendor -o {{.BUILD_PATH}}/app ./cmd/server
 
   deps:
     sources: [go.mod, go.sum]
@@ -181,6 +176,7 @@ tasks:
 ```
 
 ### Build flags
+
 - `-w -s` — strip debug info and symbol table
 - `-trimpath` — remove local paths from binary
 - `-mod vendor` — use vendored dependencies
@@ -189,11 +185,11 @@ tasks:
 ### Migration Taskfile (Taskfile.migration.yml)
 
 ```yaml
-version: '3'
+version: "3"
 env:
   GOOSE_DRIVER: postgres
-  GOOSE_DBSTRING: '{{.DATABASE_URL}}'
-  GOOSE_MIGRATION_DIR: '{{.USER_WORKING_DIR}}/migrations'
+  GOOSE_DBSTRING: "{{.DATABASE_URL}}"
+  GOOSE_MIGRATION_DIR: "{{.USER_WORKING_DIR}}/migrations"
 
 tasks:
   build:goose:
@@ -256,6 +252,7 @@ DROP TABLE IF EXISTS items;
 ```
 
 ### Rules
+
 - Use `TIMESTAMPTZ` for all timestamp columns, default `now()`
 - Create `updated_at` triggers on mutable tables
 - Add indexes for common query patterns
@@ -306,6 +303,7 @@ exec /svc/app
 ```
 
 ### Docker rules
+
 - Alpine base for minimal image size
 - Non-root user (UID 1000)
 - Devbox in builder for reproducible toolchain
@@ -341,6 +339,7 @@ func TestItemValidation(t *testing.T) {
 ```
 
 ### Rules
+
 - Use `t.Run()` for subtests
 - Use `t.Fatalf` for fatal errors, `t.Errorf` for non-fatal assertions
 - Use stdlib `testing` — no assertion libraries unless already in the project
@@ -351,6 +350,7 @@ func TestItemValidation(t *testing.T) {
 ## Vendoring
 
 All Go builds use vendored dependencies:
+
 - Run `go mod vendor` after any dependency change
 - Always pass `-mod vendor` to `go build`, `go test`
 - Vendor directory is committed to git
@@ -409,14 +409,13 @@ devbox run -- task docker:build IMAGE_TAG=$SHA
     "git": "latest"
   },
   "shell": {
-    "init_hook": [
-      "export \"GOROOT=$(go env GOROOT)\""
-    ]
+    "init_hook": ["export \"GOROOT=$(go env GOROOT)\""]
   }
 }
 ```
 
 ### Rules
+
 - `devbox.json` lives at the repo root, shared by all services
 - Pin Go version explicitly (e.g., `1.26.1`), use `latest` for tooling
 - Set `GOROOT` in init_hook for IDE compatibility

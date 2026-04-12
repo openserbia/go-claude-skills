@@ -16,12 +16,12 @@ db.SetConnMaxLifetime(5 * time.Minute)  // recycle connections (DNS changes, ser
 db.SetConnMaxIdleTime(1 * time.Minute)  // release idle connections back to the pool
 ```
 
-| Setting | Too low | Too high |
-| --- | --- | --- |
-| `MaxOpenConns` | Requests queue waiting for conn | DB overwhelmed, context switches |
-| `MaxIdleConns` | Cold connections, slow queries | Wasted memory holding idle conns |
-| `ConnMaxLifetime` | Frequent reconnection overhead | Stale connections after failover |
-| `ConnMaxIdleTime` | Same as MaxIdleConns too low | Idle conns consume server memory |
+| Setting           | Too low                         | Too high                         |
+| ----------------- | ------------------------------- | -------------------------------- |
+| `MaxOpenConns`    | Requests queue waiting for conn | DB overwhelmed, context switches |
+| `MaxIdleConns`    | Cold connections, slow queries  | Wasted memory holding idle conns |
+| `ConnMaxLifetime` | Frequent reconnection overhead  | Stale connections after failover |
+| `ConnMaxIdleTime` | Same as MaxIdleConns too low    | Idle conns consume server memory |
 
 ### Monitoring
 

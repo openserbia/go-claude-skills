@@ -39,11 +39,11 @@ Use `pgx` for PostgreSQL — never an ORM. Raw SQL with parameterized queries gi
 
 ## Library Choice
 
-| Library | Use when |
-| --- | --- |
-| `pgx` (preferred) | All PostgreSQL projects — 30-50% faster, native types, COPY, LISTEN, arrays |
-| `database/sql` + pgx stdlib | Need `database/sql` interface compatibility |
-| GORM/ent | **Never** |
+| Library                     | Use when                                                                    |
+| --------------------------- | --------------------------------------------------------------------------- |
+| `pgx` (preferred)           | All PostgreSQL projects — 30-50% faster, native types, COPY, LISTEN, arrays |
+| `database/sql` + pgx stdlib | Need `database/sql` interface compatibility                                 |
+| GORM/ent                    | **Never**                                                                   |
 
 **Why NOT ORMs:**
 
@@ -169,13 +169,13 @@ if err := rows.Err(); err != nil {
 
 ### Common database error patterns
 
-| Error | How to detect | Action |
-| --- | --- | --- |
-| Row not found | `errors.Is(err, pgx.ErrNoRows)` | Return `domain.ErrNotFound` |
-| Unique constraint | PostgreSQL error code `23505` | Return conflict error |
-| Connection refused | `err != nil` on `pool.Ping` | Fail fast, log, retry with backoff |
-| Serialization failure | PostgreSQL error code `40001` | Retry the entire transaction |
-| Context canceled | `errors.Is(err, context.Canceled)` | Stop processing, propagate |
+| Error                 | How to detect                      | Action                             |
+| --------------------- | ---------------------------------- | ---------------------------------- |
+| Row not found         | `errors.Is(err, pgx.ErrNoRows)`    | Return `domain.ErrNotFound`        |
+| Unique constraint     | PostgreSQL error code `23505`      | Return conflict error              |
+| Connection refused    | `err != nil` on `pool.Ping`        | Fail fast, log, retry with backoff |
+| Serialization failure | PostgreSQL error code `40001`      | Retry the entire transaction       |
+| Context canceled      | `errors.Is(err, context.Canceled)` | Stop processing, propagate         |
 
 ## Context Propagation
 

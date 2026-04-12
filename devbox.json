@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.6/.schema/devbox.schema.json",
+  "packages": {
+    "go-task": "latest",
+    "markdownlint-cli2": "latest",
+    "nodePackages.prettier": "latest",
+    "git": "latest"
+  }
+}

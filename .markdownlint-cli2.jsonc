@@ -1,0 +1,29 @@
+{
+  "config": {
+    // Allow long lines — skill files have tables and code blocks
+    "MD013": false,
+    // Allow duplicate headings across files
+    "MD024": false,
+    // Allow trailing punctuation in headings (### Rules:)
+    "MD026": false,
+    // Allow fenced code blocks without surrounding blank lines (in nested contexts)
+    "MD031": false,
+    // Allow lists without surrounding blank lines (common in ### Rules sections)
+    "MD032": false,
+    // Allow inline HTML (collapsible sections, badges)
+    "MD033": false,
+    // Allow emphasis as heading
+    "MD036": false,
+    // Allow missing language in fenced code blocks
+    "MD040": false,
+    // Allow non-H1 first heading (frontmatter starts files)
+    "MD041": false,
+    // Allow tabs in code blocks
+    "MD010": false,
+    // Allow headings without surrounding blank lines (### Rules followed by list)
+    "MD022": false,
+    // Allow compact table style
+    "MD060": false
+  },
+  "ignores": ["node_modules/**", ".devbox/**", ".git/**"]
+}

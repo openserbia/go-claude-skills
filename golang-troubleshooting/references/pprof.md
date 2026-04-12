@@ -62,14 +62,14 @@ func basicAuth(username, password string) func(http.Handler) http.Handler {
 
 ## Profile Types
 
-| Profile | Command | What It Shows |
-| --- | --- | --- |
-| **CPU** | `go tool pprof profile` | Where CPU time is spent |
-| **Heap** | `go tool pprof heap` | Memory allocations, live objects |
-| **Goroutine** | `go tool pprof goroutine` | Stack traces of all goroutines |
-| **Block** | `go tool pprof block` | Blocking operations (needs SetBlockProfileRate) |
-| **Mutex** | `go tool pprof mutex` | Lock contention (needs SetMutexProfileFraction) |
-| **Alloc** | `go tool pprof -alloc_space heap` | Cumulative allocations (not current heap) |
+| Profile       | Command                           | What It Shows                                   |
+| ------------- | --------------------------------- | ----------------------------------------------- |
+| **CPU**       | `go tool pprof profile`           | Where CPU time is spent                         |
+| **Heap**      | `go tool pprof heap`              | Memory allocations, live objects                |
+| **Goroutine** | `go tool pprof goroutine`         | Stack traces of all goroutines                  |
+| **Block**     | `go tool pprof block`             | Blocking operations (needs SetBlockProfileRate) |
+| **Mutex**     | `go tool pprof mutex`             | Lock contention (needs SetMutexProfileFraction) |
+| **Alloc**     | `go tool pprof -alloc_space heap` | Cumulative allocations (not current heap)       |
 
 ## Capturing Profiles
 

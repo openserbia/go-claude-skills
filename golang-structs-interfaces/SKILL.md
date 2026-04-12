@@ -199,9 +199,9 @@ default:
 
 ### When to Embed vs Named Field
 
-| Use | When |
-| --- | --- |
-| **Embed** | You want to promote the full API — the outer type "is a" enhanced version |
+| Use             | When                                                                        |
+| --------------- | --------------------------------------------------------------------------- |
+| **Embed**       | You want to promote the full API — the outer type "is a" enhanced version   |
 | **Named field** | You only need the inner type internally — the outer type "has a" dependency |
 
 ```go
@@ -293,20 +293,20 @@ type UpsertResidentRequest struct {
 
 ### Tag reference
 
-| Tag | Purpose |
-| --- | --- |
-| `json:"snake_case"` | JSON field name (always snake_case) |
-| `json:"field,omitempty"` | Omit if zero value |
-| `json:"-"` | Exclude from JSON |
-| `in:"query=param"` | httpin query parameter binding |
-| `in:"path=param"` | httpin URL path parameter (via chi) |
-| `in:"body=json"` | httpin JSON body binding |
-| `in:"header=X-Header"` | httpin header binding |
-| `in:"query=limit;default=20"` | httpin with default value |
-| `validate:"required"` | go-playground/validator required |
-| `validate:"gt=0"` | Numeric comparison |
-| `validate:"oneof=a b c"` | Enum-like values |
-| `validate:"omitempty,gt=0"` | Optional but validated if present |
+| Tag                           | Purpose                             |
+| ----------------------------- | ----------------------------------- |
+| `json:"snake_case"`           | JSON field name (always snake_case) |
+| `json:"field,omitempty"`      | Omit if zero value                  |
+| `json:"-"`                    | Exclude from JSON                   |
+| `in:"query=param"`            | httpin query parameter binding      |
+| `in:"path=param"`             | httpin URL path parameter (via chi) |
+| `in:"body=json"`              | httpin JSON body binding            |
+| `in:"header=X-Header"`        | httpin header binding               |
+| `in:"query=limit;default=20"` | httpin with default value           |
+| `validate:"required"`         | go-playground/validator required    |
+| `validate:"gt=0"`             | Numeric comparison                  |
+| `validate:"oneof=a b c"`      | Enum-like values                    |
+| `validate:"omitempty,gt=0"`   | Optional but validated if present   |
 
 ### Rules
 
@@ -318,11 +318,11 @@ type UpsertResidentRequest struct {
 
 ## Pointer vs Value Receivers
 
-| Use pointer `(s *Server)` | Use value `(s Server)` |
-| --- | --- |
-| Method modifies the receiver | Receiver is small and immutable |
-| Receiver contains `sync.Mutex` or similar | Receiver is a basic type (int, string) |
-| Receiver is a large struct | Method is a read-only accessor |
+| Use pointer `(s *Server)`                             | Use value `(s Server)`                            |
+| ----------------------------------------------------- | ------------------------------------------------- |
+| Method modifies the receiver                          | Receiver is small and immutable                   |
+| Receiver contains `sync.Mutex` or similar             | Receiver is a basic type (int, string)            |
+| Receiver is a large struct                            | Method is a read-only accessor                    |
 | Consistency: if any method uses a pointer, all should | Map and function values (already reference types) |
 
 Receiver type MUST be consistent across all methods of a type.
@@ -347,20 +347,20 @@ type ConnPool struct {
 
 ## Common Mistakes
 
-| Mistake | Fix |
-| --- | --- |
-| Large interfaces (5+ methods) | Split into focused 1-3 method interfaces, compose if needed |
-| Defining interfaces in the implementor package | Define where consumed |
-| Returning interfaces from constructors | Return concrete types |
-| Bare type assertions without comma-ok | Always use `v, ok := x.(T)` |
-| Embedding when you only need a few methods | Use a named field and delegate explicitly |
-| Missing field tags on serialized structs | Tag all exported fields |
-| Mixing pointer and value receivers on a type | Pick one and be consistent |
-| Premature interface with a single implementation | Start concrete, extract when needed |
-| Nil map/slice in zero value struct | Use lazy initialization in methods |
-| Using `any` for type-safe operations | Use generics instead |
-| Missing `in:` tags on request DTOs | All request fields need httpin binding tags |
-| Exposing domain entities as request DTOs | Separate transport DTOs with conversion methods |
+| Mistake                                          | Fix                                                         |
+| ------------------------------------------------ | ----------------------------------------------------------- |
+| Large interfaces (5+ methods)                    | Split into focused 1-3 method interfaces, compose if needed |
+| Defining interfaces in the implementor package   | Define where consumed                                       |
+| Returning interfaces from constructors           | Return concrete types                                       |
+| Bare type assertions without comma-ok            | Always use `v, ok := x.(T)`                                 |
+| Embedding when you only need a few methods       | Use a named field and delegate explicitly                   |
+| Missing field tags on serialized structs         | Tag all exported fields                                     |
+| Mixing pointer and value receivers on a type     | Pick one and be consistent                                  |
+| Premature interface with a single implementation | Start concrete, extract when needed                         |
+| Nil map/slice in zero value struct               | Use lazy initialization in methods                          |
+| Using `any` for type-safe operations             | Use generics instead                                        |
+| Missing `in:` tags on request DTOs               | All request fields need httpin binding tags                 |
+| Exposing domain entities as request DTOs         | Separate transport DTOs with conversion methods             |
 
 ## Attribution
 

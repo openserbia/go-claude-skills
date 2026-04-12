@@ -8,8 +8,7 @@ metadata:
 
 # Go Validation with go-playground/validator
 
-Comprehensive guide for struct validation in Go HTTP services using `go-playground/validator/v10` integrated with
-`httpin` for request binding.
+Comprehensive guide for struct validation in Go HTTP services using `go-playground/validator/v10` integrated with `httpin` for request binding.
 
 ## Setup — Do Once
 
@@ -35,10 +34,8 @@ return tag
 
 ### Rules
 
-- **Singleton instance** — create ONE validator at package level, reuse everywhere. The validator caches struct metadata
-  after first validation; creating new instances loses the cache.
-- **Register at startup** — all custom validators and struct validators MUST be registered during `init()`. Registration
-  is NOT thread-safe.
+- **Singleton instance** — create ONE validator at package level, reuse everywhere. The validator caches struct metadata after first validation; creating new instances loses the cache.
+- **Register at startup** — all custom validators and struct validators MUST be registered during `init()`. Registration is NOT thread-safe.
 - **Use `validate.StructCtx`** — always pass context for cancellation support.
 
 ```go
@@ -58,21 +55,21 @@ validate.StructCtx(r.Context(), req)
 
 ### Requirement Tags
 
-| Tag                           | Purpose                                    | Example                                          |
-|-------------------------------|--------------------------------------------|--------------------------------------------------|
-| `required`                    | Must not be zero value                     | `validate:"required"`                            |
-| `omitempty`                   | Skip if empty, validate if present         | `validate:"omitempty,gt=0"`                      |
-| `required_if=Field value`     | Required when another field equals value   | `validate:"required_if=Type offline"`            |
-| `required_unless=Field value` | Required unless another field equals value | `validate:"required_unless=Status draft"`        |
-| `required_with=Field`         | Required if another field is present       | `validate:"required_with=EndDate"`               |
-| `required_with_all=F1 F2`     | Required if ALL listed fields present      | `validate:"required_with_all=StartDate EndDate"` |
-| `required_without=Field`      | Required if another field is absent        | `validate:"required_without=Email"`              |
-| `excluded_if=Field value`     | Excluded when condition met                | `validate:"excluded_if=Type internal"`           |
+| Tag | Purpose | Example |
+| --- | --- | --- |
+| `required` | Must not be zero value | `validate:"required"` |
+| `omitempty` | Skip if empty, validate if present | `validate:"omitempty,gt=0"` |
+| `required_if=Field value` | Required when another field equals value | `validate:"required_if=Type offline"` |
+| `required_unless=Field value` | Required unless another field equals value | `validate:"required_unless=Status draft"` |
+| `required_with=Field` | Required if another field is present | `validate:"required_with=EndDate"` |
+| `required_with_all=F1 F2` | Required if ALL listed fields present | `validate:"required_with_all=StartDate EndDate"` |
+| `required_without=Field` | Required if another field is absent | `validate:"required_without=Email"` |
+| `excluded_if=Field value` | Excluded when condition met | `validate:"excluded_if=Type internal"` |
 
 ### Numeric Comparisons
 
 | Tag     | Purpose                                                          | Example              |
-|---------|------------------------------------------------------------------|----------------------|
+| ------- | ---------------------------------------------------------------- | -------------------- |
 | `gt=N`  | Greater than                                                     | `validate:"gt=0"`    |
 | `gte=N` | Greater than or equal                                            | `validate:"gte=1"`   |
 | `lt=N`  | Less than                                                        | `validate:"lt=100"`  |
@@ -86,7 +83,7 @@ validate.StructCtx(r.Context(), req)
 ### Cross-Field Comparisons
 
 | Tag                | Purpose                              | Example                             |
-|--------------------|--------------------------------------|-------------------------------------|
+| ------------------ | ------------------------------------ | ----------------------------------- |
 | `eqfield=Field`    | Equals another field                 | `validate:"eqfield=Password"`       |
 | `nefield=Field`    | Not equals another field             | `validate:"nefield=OldEmail"`       |
 | `gtfield=Field`    | Greater than another field           | `validate:"gtfield=StartDate"`      |
@@ -98,7 +95,7 @@ validate.StructCtx(r.Context(), req)
 ### String Validators
 
 | Tag                    | Purpose                                |
-|------------------------|----------------------------------------|
+| ---------------------- | -------------------------------------- |
 | `email`                | Valid email                            |
 | `url`                  | Valid URL                              |
 | `uri`                  | Valid URI                              |
@@ -117,7 +114,7 @@ validate.StructCtx(r.Context(), req)
 ### Collection Tags
 
 | Tag                | Purpose                                          |
-|--------------------|--------------------------------------------------|
+| ------------------ | ------------------------------------------------ |
 | `dive`             | Validate each element in slice/array/map         |
 | `keys` / `endkeys` | Validate map keys (between `keys` and `endkeys`) |
 
@@ -289,8 +286,7 @@ return false
 
 Use: `validate:"required,eventtype"`
 
-**Why custom over `oneof`:** The list of valid values comes from domain code, not hardcoded in a tag. Adding a new enum
-value doesn't require updating every struct tag.
+**Why custom over `oneof`:** The list of valid values comes from domain code, not hardcoded in a tag. Adding a new enum value doesn't require updating every struct tag.
 
 ### Pattern — Date Format Validator
 
@@ -346,8 +342,7 @@ return fl.Field().Int() > 0
 
 ## Two-Layer Validation
 
-Use **tag-based validation** for field-level constraints and **service-layer validation** for complex business rules
-that cross multiple fields or require external data.
+Use **tag-based validation** for field-level constraints and **service-layer validation** for complex business rules that cross multiple fields or require external data.
 
 ### Layer 1 — Tag-Based (in handler)
 
@@ -366,8 +361,7 @@ return
 
 ### Layer 2 — Domain Logic (in service)
 
-For rules that can't be expressed with tags — cross-field business logic, conditional requirements based on data
-combinations:
+For rules that can't be expressed with tags — cross-field business logic, conditional requirements based on data combinations:
 
 ```go
 func ValidateApplication(req *domain.Application) *httpx.ValidationErrors {
@@ -530,7 +524,7 @@ return
 ### Tag mapping
 
 | Source      | httpin tag                    | Validator tag                                |
-|-------------|-------------------------------|----------------------------------------------|
+| ----------- | ----------------------------- | -------------------------------------------- |
 | Query param | `in:"query=status"`           | `validate:"omitempty,oneof=active inactive"` |
 | Path param  | `in:"path=id"`                | `validate:"required,gt=0"`                   |
 | JSON body   | `in:"body=json"`              | `validate:"required"` (on payload field)     |
@@ -541,7 +535,7 @@ return
 ## Common Mistakes
 
 | Mistake                                          | Fix                                                             |
-|--------------------------------------------------|-----------------------------------------------------------------|
+| ------------------------------------------------ | --------------------------------------------------------------- |
 | Creating validator per request                   | Use singleton `var validate = validator.New()`                  |
 | Registering validators during requests           | Register in `init()` only                                       |
 | Missing `omitempty` on optional fields           | Add `omitempty` before other tags                               |
