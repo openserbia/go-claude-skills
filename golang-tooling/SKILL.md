@@ -365,6 +365,59 @@ All Go builds use vendored dependencies:
 
 ## Devbox Toolchain
 
-Use `devbox.json` for reproducible development environment:
-- Go, golangci-lint, gofumpt, gci, goose, delve
-- Run tasks via `devbox run -- task <name>`
+Use Devbox (`devbox.json`) for reproducible development environment across all services.
+
+### Running tasks
+
+Each service has its own `Taskfile.yml`. Always run tasks **from within the service directory** using Devbox:
+
+```bash
+# Option 1: enter Devbox shell, then run tasks
+cd svc && devbox shell
+task build
+task lint
+
+# Option 2: one-shot command
+cd svc && devbox run -- task build
+```
+
+**Never run `go build`, `golangci-lint`, `gofumpt`, or `gci` directly** — always go through `task` commands inside Devbox to ensure correct tool versions and environment.
+
+### CI/CD pattern
+
+```bash
+# From within each service directory
+devbox run -- task docker:build IMAGE_TAG=$SHA
+```
+
+### devbox.json packages
+
+```json
+{
+  "packages": {
+    "go": "1.26.1",
+    "golangci-lint": "latest",
+    "gofumpt": "latest",
+    "gci": "latest",
+    "go-task": "latest",
+    "gopls": "latest",
+    "delve": "latest",
+    "ginkgo": "latest",
+    "nodejs_24": "latest",
+    "bun": "latest",
+    "ngrok": "latest",
+    "git": "latest"
+  },
+  "shell": {
+    "init_hook": [
+      "export \"GOROOT=$(go env GOROOT)\""
+    ]
+  }
+}
+```
+
+### Rules
+- `devbox.json` lives at the repo root, shared by all services
+- Pin Go version explicitly (e.g., `1.26.1`), use `latest` for tooling
+- Set `GOROOT` in init_hook for IDE compatibility
+- All developers and CI use Devbox — no local tool installations
