@@ -55,43 +55,42 @@ jobs:
       - name: Generate release notes
         id: notes
         run: |
-          TAG=${{ steps.version.outputs.tag }}
           PREV_TAG=${{ steps.version.outputs.prev }}
 
-          {
-            echo "notes<<EOF"
+          DELIMITER="RELEASE_NOTES_$(date +%s)"
+          echo "notes<<${DELIMITER}" >> "$GITHUB_OUTPUT"
 
-            devbox run -- task stats
+          devbox run -- task stats >> "$GITHUB_OUTPUT"
 
-            echo ""
-            echo "## Changes"
-            echo ""
+          echo "" >> "$GITHUB_OUTPUT"
+          echo "## Changes" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
 
-            if [ -n "$PREV_TAG" ]; then
-              git log --pretty=format:"- %s" "$PREV_TAG".."$TAG" -- '*.md' 'golang-*/' 'Taskfile.yml' 'devbox.json'
-            else
-              git log --pretty=format:"- %s" "$TAG"
-            fi
+          if [ -n "$PREV_TAG" ]; then
+            git log --pretty=format:"- %s" "${PREV_TAG}..HEAD" -- '*.md' 'golang-*/' 'Taskfile.yml' 'devbox.json' >> "$GITHUB_OUTPUT"
+          else
+            git log --pretty=format:"- %s" HEAD >> "$GITHUB_OUTPUT"
+          fi
 
-            echo ""
-            echo ""
-            echo "## Skills"
-            echo ""
-            for dir in golang-*/; do
-              name=$(grep "^name:" "$dir/SKILL.md" | head -1 | sed 's/name: *//' | tr -d '"')
-              desc=$(grep "^description:" "$dir/SKILL.md" | head -1 | sed 's/description: *//' | tr -d '"' | cut -c1-100)
-              echo "- **$name** — $desc"
-            done
+          echo "" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
+          echo "## Skills" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
 
-            echo ""
-            echo "## Install"
-            echo ""
-            echo '```bash'
-            echo "npx skills add openserbia/go-claude-skills -g -y"
-            echo '```'
+          for dir in golang-*/; do
+            name=$(grep "^name:" "$dir/SKILL.md" | head -1 | sed 's/name: *//' | tr -d '"')
+            desc=$(grep "^description:" "$dir/SKILL.md" | head -1 | sed 's/description: *//' | tr -d '"' | cut -c1-100)
+            echo "- **${name}** — ${desc}" >> "$GITHUB_OUTPUT"
+          done
 
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
+          echo "## Install" >> "$GITHUB_OUTPUT"
+          echo "" >> "$GITHUB_OUTPUT"
+          echo '```bash' >> "$GITHUB_OUTPUT"
+          echo "npx skills add openserbia/go-claude-skills -g -y" >> "$GITHUB_OUTPUT"
+          echo '```' >> "$GITHUB_OUTPUT"
+
+          echo "${DELIMITER}" >> "$GITHUB_OUTPUT"
 
       - name: Create tag
         run: |
