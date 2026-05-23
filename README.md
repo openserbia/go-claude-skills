@@ -1,5 +1,7 @@
 # Agent Skills for Go HTTP Services
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/openserbia/go-claude-skills/badge)](https://scorecard.dev/viewer/?uri=github.com/openserbia/go-claude-skills)
+
 Opinionated AI agent skills for building production-grade Go HTTP services. Extracted from real production code — chi router, pgx, httpin, go-playground/validator, goose migrations, and clean layered architecture.
 
 > Distilled from [openserbia/tg-statistic](https://github.com/openserbia/tg-statistic) production codebase. **Reviewed and curated by a human.**
