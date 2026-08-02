@@ -23,7 +23,7 @@ jobs:
     # workflow_dispatch — never fork-reachable.
     runs-on: [self-hosted, ax41]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
 
       - name: Lint
         run: devbox run -- task lint
@@ -35,7 +35,7 @@ jobs:
     needs: lint
     runs-on: [self-hosted, ax41]
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
 
