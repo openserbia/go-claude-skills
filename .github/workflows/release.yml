@@ -18,7 +18,10 @@ permissions:
 
 jobs:
   lint:
-    runs-on: self-hosted
+    # Explicit host label: bare `self-hosted` matches ANY runner in the org
+    # pool, including the ARM rpi replicas. Only fires on push-to-main /
+    # workflow_dispatch — never fork-reachable.
+    runs-on: [self-hosted, ax41]
     steps:
       - uses: actions/checkout@v7
 
@@ -30,7 +33,7 @@ jobs:
 
   release:
     needs: lint
-    runs-on: self-hosted
+    runs-on: [self-hosted, ax41]
     steps:
       - uses: actions/checkout@v7
         with:

@@ -6,15 +6,33 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   lint:
-    runs-on: self-hosted
+    # SECURITY: this triggers on `pull_request`, so a PR from ANY fork runs the
+    # PR-controlled Taskfile / scripts here. It MUST stay on ephemeral
+    # GitHub-hosted ubuntu-latest — NEVER the self-hosted org pool, which is
+    # shared with the rootful production build host. Self-hosted runners do NOT
+    # refuse fork-PR triggers; they run them subject only to the fork-PR
+    # approval gate. Standard runners are free with unlimited minutes on public
+    # repos, so this costs nothing.
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install devbox
+        uses: jetify-com/devbox-install-action@8c6a66ed6273138b1915457069de78cb52fe3bd7  # v0.15.0
+        with:
+          devbox-version: 0.13.6
+          enable-cache: 'true'
 
       - name: Lint markdown
         run: devbox run -- task lint:md
