@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   lint:
@@ -23,7 +23,9 @@ jobs:
     # workflow_dispatch — never fork-reachable.
     runs-on: [self-hosted, ax41]
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Lint
         run: devbox run -- task lint
@@ -34,8 +36,10 @@ jobs:
   release:
     needs: lint
     runs-on: [self-hosted, ax41]
+    permissions:
+      contents: write   # push the release tag + create the GitHub release
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1  # zizmor: ignore[artipacked] job pushes with git
         with:
           fetch-depth: 0
 
